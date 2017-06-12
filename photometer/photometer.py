@@ -8,25 +8,25 @@ c = 0
 def main(port, readings, interval, save, printing):
     if save:
         data = open(time.strftime('%Y%m%d_%H%M%S'), 'w+')
-    try:
-        with serial.Serial(port) as photometer:
-            while True:
-                start = time.time()
-                voltage = photometer.readline()
-                voltage = m * float(voltage.strip()) + c
+    with serial.Serial(port) as photometer:
+        while True:
+            start = time.time()
+            voltage = photometer.readline()
+            voltage = voltage.decode('utf-8')
+            voltage = m * float(voltage.strip()) + c
+            if save:
                 data.write(str(voltage) + '\n')
-                readings -= 1
-                if printing:
-                    print(voltage)
-                if readings < 0:
-                    print("%s readings left" % readings)
-                elif readings == 0:
-                    break
-                if interval > 0:
-                    time.sleep(interval - (time.time()-start))
+            readings -= 1
+            if printing:
+                print(voltage)
+            if readings > 0:
+                print("%s readings left" % readings)
+            elif readings == 0:
+                break
+            if interval > 0:
+                time.sleep(interval - (time.time()-start))
+    if save:
         data.close()
-    except NameError:
-        pass
 
 def init():
     parser = argparse.ArgumentParser()
