@@ -37,6 +37,6 @@ def init():
     parser.add_argument('-o', '--output', action = 'store_false', help = "flag to suppress printing of readings to console")
     args = parser.parse_args()
 
-    main(args.port)
+    main(args.port, args.readings, args.interval, args.save, args.output)
 
 init()
